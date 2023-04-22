@@ -1,0 +1,4 @@
+--patch-module
+com.tugalsan.spi.serialyh=_
+--add-reads
+com.tugalsan.spi.serialyh=ALL-UNNAMED
