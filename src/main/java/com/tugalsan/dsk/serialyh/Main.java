@@ -1,5 +1,6 @@
 package com.tugalsan.dsk.serialyh;
 
+import com.tugalsan.api.desktop.server.TS_DesktopFrameUtils;
 import com.tugalsan.api.serialcom.kincony.server.KC868_A32_R1_2.*;
 
 //WHEN RUNNING IN NETBEANS, ALL DEPENDENCIES SHOULD HAVE TARGET FOLDER!
@@ -8,6 +9,7 @@ import com.tugalsan.api.serialcom.kincony.server.KC868_A32_R1_2.*;
 public class Main {
 
     public static void main(String... s) {
-        TS_SerialComKinConyKC868_A32_R1_2_Test.main(s);
+        TS_DesktopFrameUtils.create(() -> new GUI());
+//        TS_SerialComKinConyKC868_A32_R1_2_Test.main(s);
     }
 }
