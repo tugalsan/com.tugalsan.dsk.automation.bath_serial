@@ -35,35 +35,37 @@ public class Mem_Int {
     @Override
     public String toString() {
         var sb = new StringBuilder();
-        switch (status) {        
-            case ERROR_EMPTY:
-                sb.append(time.toString_timeOnly()).append("ERROR_EMPTY");
-                break;
-            case ERROR_SIZE:
-                sb.append(time.toString_timeOnly()).append("ERROR_SIZE [").append(mem_int.get().size()).append("]").append(mem_int);
-                break;
-            case OK:
+        switch (status) {
+            case ERROR_EMPTY ->
                 sb
-                        .append(time.toString_timeOnly()).append(".lstDI: ")
-                        .append(lstDI.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(", ")))
-                        .append("\n")
-                        .append(time.toString_timeOnly()).append(".lstDO: ")
-                        .append(lstDO.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(", ")))
-                        .append("\n")
-                        .append(time.toString_timeOnly()).append(".lstOS: ")
-                        .append(lstOS.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(", ")))
+                        .append(time.toString_timeOnly())
+                        .append(" ERROR_EMPTY");
+            case ERROR_SIZE ->
+                sb
+                        .append(time.toString_timeOnly())
+                        .append(" ERROR_SIZE [").append(mem_int.get().size()).append("] -> ")
+                        .append(mem_int);
+            case OK ->
+                sb
+                        .append(time.toString_timeOnly())
+                        .append(" lstDI: ")
+                        .append(lstDI.stream().map(b -> b ? 1 : 0).map(i -> String.valueOf(i)).collect(Collectors.joining(", ")))
                         .append("\n")
                         .append(time.toString_timeOnly())
-                        .append(".lstTI: ").append(lstTI.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(", ")));
-                break;
-            default:
-                sb.append("UNKNOWN_STATUS");
-        }
-        if (status == STATUS.ERROR_EMPTY) {
-
-            return sb.toString();
-        } else if (status == STATUS.ERROR_EMPTY) {
-
+                        .append(" lstDO: ")
+                        .append(lstDO.stream().map(b -> b ? 1 : 0).map(i -> String.valueOf(i)).collect(Collectors.joining(", ")))
+                        .append("\n")
+                        .append(time.toString_timeOnly())
+                        .append(" lstOS: ")
+                        .append(lstOS.stream().map(b -> b ? 1 : 0).map(i -> String.valueOf(i)).collect(Collectors.joining(", ")))
+                        .append("\n")
+                        .append(time.toString_timeOnly())
+                        .append(" lstTI: ")
+                        .append(lstTI.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(", ")));
+            default ->
+                sb
+                        .append(time.toString_timeOnly())
+                        .append(" UNKNOWN_STATUS");
         }
         return sb.toString();
     }
@@ -72,11 +74,11 @@ public class Mem_Int {
         var mem_int = TS_SerialComKinConyKC868_A32_R1_2.memInt_getAll();
         return new Mem_Int(mem_int);
     }
-    Optional<List<Integer>> mem_int;
-    STATUS status;
-    List<Boolean> lstDI = TGS_ListUtils.of();
-    List<Boolean> lstDO = TGS_ListUtils.of();
-    List<Boolean> lstOS = TGS_ListUtils.of();
-    List<Integer> lstTI = TGS_ListUtils.of();
-    TGS_Time time = TGS_Time.of();
+    public Optional<List<Integer>> mem_int;
+    public STATUS status;
+    public List<Boolean> lstDI = TGS_ListUtils.of();
+    public List<Boolean> lstDO = TGS_ListUtils.of();
+    public List<Boolean> lstOS = TGS_ListUtils.of();
+    public List<Integer> lstTI = TGS_ListUtils.of();
+    public TGS_Time time = TGS_Time.of();
 }
