@@ -3,6 +3,7 @@ package com.tugalsan.dsk.serialyh;
 import com.tugalsan.api.cast.client.*;
 import com.tugalsan.api.desktop.server.*;
 import com.tugalsan.api.list.client.*;
+import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import java.util.*;
 import java.util.stream.*;
 import javax.swing.*;
@@ -10,7 +11,17 @@ import org.netbeans.lib.awtextra.AbsoluteConstraints;
 
 public class GUI extends javax.swing.JFrame {
 
-    public List<JLabel> lstTf = TGS_ListUtils.of();
+    public List<JLabel> lstValues = TGS_ListUtils.of();
+    private List<JButton> lstBtns = TGS_ListUtils.of();
+
+    private Optional<List<Integer>> getLblValues() {
+        var result = TGS_StreamUtils.toLst(
+                lstValues.stream()
+                        .map(lbl -> TGS_CastUtils.toInteger(lbl.getText()))
+                        .filter(val -> val != null)
+        );
+        return result.size() == 16 ? Optional.of(result) : Optional.empty();
+    }
 
     public static List<String> lblNames_KüçükFosfat = List.of(
             "-", //0
@@ -55,14 +66,19 @@ public class GUI extends javax.swing.JFrame {
         initComponents();
         var offsetX = 6;
         var offsetY = 120;
-        var width = 100;
+        var widthName = 150;
+        var widthValue = 75;
         var height = 24;
+        var gap = 2;
         IntStream.range(0, 16).forEachOrdered(i -> {
-            var lblName = new JLabel(lblNames_KüçükFosfat.get(i) + ":");
-            var lblValue = new JLabel();
-            var btn = new JButton("Değiştir");
-            btn.addActionListener(e -> {
-                var oldVal = TGS_CastUtils.toInteger(lstTf.get(i).getText());
+            lstValues.add(new JLabel());
+            lstBtns.add(new JButton(lblNames_KüçükFosfat.get(i) + ":"));
+            getContentPane().add(lstBtns.get(i), new AbsoluteConstraints(offsetX, offsetY + height * i, widthName, height));
+            getContentPane().add(lstValues.get(i), new AbsoluteConstraints(offsetX + widthName + gap, offsetY + gap + height * i, widthValue, height));
+        });
+        IntStream.range(0, 16).forEachOrdered(i -> {
+            lstBtns.get(i).addActionListener(e -> {
+                var oldVal = TGS_CastUtils.toInteger(this.lstValues.get(i).getText());
                 var newVal = TS_DesktopDialogInputNumberUtils.show("Sayı Girin", oldVal);
                 if (newVal.isEmpty()) {
                     TS_DesktopDialogInfoUtils.show("HATA", "Bir sayı olmalıydı.");
@@ -72,14 +88,13 @@ public class GUI extends javax.swing.JFrame {
                     TS_DesktopDialogInfoUtils.show("HATA", "0 dan büyük olmalıydı.");
                     return;
                 }
-                Main.mem_int_set_idx_val_or_values16.add(List.of(i, newVal.get()));
+                var lblValues = getLblValues();
+                if (lblValues.isPresent()) {
+                    lblValues.get().set(i, newVal.get());
+                    Main.cmdValues16.add(lblValues.get());
+                }
             });
-            getContentPane().add(btn, new AbsoluteConstraints(offsetX + (width + 1) * 0, offsetY + height * i, width, height));
-            getContentPane().add(lblName, new AbsoluteConstraints(offsetX + (width + 1) * 1, offsetY + height * i, width, height));
-            getContentPane().add(lblValue, new AbsoluteConstraints(offsetX + (width + 1) * 2, offsetY + height * i, width, height));
-            lstTf.add(lblValue);
         });
-
         setVisible(true);
     }
 

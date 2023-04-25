@@ -1,7 +1,6 @@
 package com.tugalsan.dsk.serialyh;
 
 import com.tugalsan.api.cast.client.TGS_CastUtils;
-import com.tugalsan.api.coronator.client.TGS_Coronator;
 import com.tugalsan.api.desktop.server.TS_DesktopFrameUtils;
 import com.tugalsan.api.file.properties.server.TS_FilePropertiesUtils;
 import com.tugalsan.api.file.server.TS_FileUtils;
@@ -17,7 +16,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 //WHEN RUNNING IN NETBEANS, ALL DEPENDENCIES SHOULD HAVE TARGET FOLDER!
@@ -29,7 +27,7 @@ public class Main {
 
     public static volatile Mem_Int mem_int_last;
 
-    final public static TS_ThreadSafeLst<List<Integer>> mem_int_set_idx_val_or_values16 = new TS_ThreadSafeLst();
+    final public static TS_ThreadSafeLst<List<Integer>> cmdValues16 = new TS_ThreadSafeLst();
     public static volatile GUI gui;
 
     final public static Path fileCmd = Path.of("C:", "com.tugalsan.dsk.serialyh", "cmd.txt");
@@ -40,18 +38,18 @@ public class Main {
         TS_DesktopFrameUtils.create(() -> gui = new GUI());
         TS_ThreadRun.now(() -> {
             while (true) {
-                if (mem_int_set_idx_val_or_values16.isEmpty()) {
+                if (cmdValues16.isEmpty()) {
                     mem_int_last = Mem_Int.of();
                     if (gui != null) {
                         gui.taReply.setText(mem_int_last.toString());
                         if (mem_int_last.status == Mem_Int.STATUS.OK) {
                             IntStream.range(0, 16).forEachOrdered(i -> {
                                 var memVal = mem_int_last.mem_int.get().get(32 * 3 + i);
-                                var lstStr = gui.lstTf.get(i);
+                                var lstStr = gui.lstValues.get(i);
                                 if (Objects.equals(memVal, lstStr)) {
                                     return;
                                 }
-                                gui.lstTf.get(i).setText(memVal.toString());
+                                gui.lstValues.get(i).setText(memVal.toString());
                             });
                         }
                     }
@@ -67,17 +65,8 @@ public class Main {
                     }
                     continue;
                 }
-                var lst = mem_int_set_idx_val_or_values16.findFirst(val -> true);
-                mem_int_set_idx_val_or_values16.removeFirst(lst);
-                var result = TGS_Coronator.ofBool()
-                        .anoint(val -> null)
-                        .anointAndCoronateIf(val -> lst.size() == 16, val -> TS_SerialComKinConyKC868_A32_R1_2.memInt_setAll(lst))
-                        .anointAndCoronateIf(val -> lst.size() == 2, val -> TS_SerialComKinConyKC868_A32_R1_2.memInt_setIdx(lst.get(0), lst.get(1)))
-                        .coronate();
-                if (result == null) {
-                    gui.taReply.setText("CMD_ERROR");
-                    TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileRes) + " CMD_ERROR", fileRes, false);
-                } else if (result) {
+                var lst = cmdValues16.popFirst(val -> true);
+                if (TS_SerialComKinConyKC868_A32_R1_2.memInt_setAll(lst)) {
                     gui.taReply.setText("Değişiklik başarılı.");
                     TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileRes) + " CMD_DONE", fileRes, false);
                 } else {
@@ -107,8 +96,8 @@ public class Main {
                 d.cr("watcher", "bath_timers.size() != 16", bath_timers.size());
                 return;
             }
-            mem_int_set_idx_val_or_values16.add(bath_timers);
+            cmdValues16.add(bath_timers);
             d.cr("watcher", "cmd_added", bath_timers);
-        }, TS_FileWatchUtils.Types.MODIFY);
+        }, TS_FileWatchUtils.Triggers.MODIFY);
     }
 }
