@@ -16,6 +16,7 @@ import com.tugalsan.api.thread.server.TS_ThreadWait;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -23,17 +24,18 @@ import java.util.stream.IntStream;
 //cd C:\me\codes\com.tugalsan\dsk\com.tugalsan.dsk.serialyh
 //java --enable-preview --add-modules jdk.incubator.concurrent -jar target/com.tugalsan.dsk.serialyh-1.0-SNAPSHOT-jar-with-dependencies.jar    
 public class Main {
-    
+
     final private static TS_Log d = TS_Log.of(true, Main.class);
-    
+
     public static volatile Mem_Int mem_int_last;
-    
+
     final public static TS_ThreadSafeLst<List<Integer>> mem_int_set_idx_val_or_values16 = new TS_ThreadSafeLst();
     public static volatile GUI gui;
-    
-    final public static Path fileCmd = Path.of("C", "com.tugalsan.dsk.serialyh", "cmd.txt");
-    final public static Path fileRes = Path.of("C", "com.tugalsan.dsk.serialyh", "res.txt");
-    
+
+    final public static Path fileCmd = Path.of("C:", "com.tugalsan.dsk.serialyh", "cmd.txt");
+    final public static Path fileRes = Path.of("C:", "com.tugalsan.dsk.serialyh", "res.txt");
+    final public static String propsParamPrefix = "bath_timer_";
+
     public static void main(String... s) {
         TS_DesktopFrameUtils.create(() -> gui = new GUI());
         TS_ThreadRun.now(() -> {
@@ -54,8 +56,14 @@ public class Main {
                         }
                     }
                     if (!TS_FileUtils.isExistFile(fileCmd)) {
-                        TS_FileTxtUtils.toFile(mem_int_last.lstTI.stream().map(i -> String.valueOf(i)).collect(Collectors.joining("\n")), fileCmd, false);
-                        TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileCmd) + "CMD_INIT", fileRes, false);
+                        var sj = new StringJoiner("\n");
+                        IntStream.range(0, 16).forEachOrdered(i -> {
+                            sj.add(propsParamPrefix + i + "=" + mem_int_last.lstTI.get(i));
+                        });
+                        TS_FileTxtUtils.toFile(sj.toString(), fileCmd, false);
+                    }
+                    if (!TS_FileUtils.isExistFile(fileRes)) {
+                        TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileCmd) + " CMD_INIT", fileRes, false);
                     }
                     continue;
                 }
@@ -68,40 +76,39 @@ public class Main {
                         .coronate();
                 if (result == null) {
                     gui.taReply.setText("CMD_ERROR");
-                    if (TS_FileUtils.isExistFile(fileCmd)) {
-                        TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileCmd) + " CMD_ERROR", fileRes, false);
-                    }
+                    TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileRes) + " CMD_ERROR", fileRes, false);
                 } else if (result) {
                     gui.taReply.setText("Değişiklik başarılı.");
-                    if (TS_FileUtils.isExistFile(fileCmd)) {
-                        TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileCmd) + " CMD_DONE", fileRes, false);
-                    }
+                    TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileRes) + " CMD_DONE", fileRes, false);
                 } else {
                     gui.taReply.setText("Değişiklik BAŞARISIZ!");
-                    if (TS_FileUtils.isExistFile(fileCmd)) {
-                        TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileCmd) + " CMD_FAILED", fileRes, false);
-                    }
+                    TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileRes) + " CMD_FAILED", fileRes, false);
                 }
             }
         });
-        TS_FileWatchUtils.file(fileRes, () -> {
+        TS_FileWatchUtils.file(fileCmd, () -> {
+            d.cr("watcher", "detected");
             TS_ThreadWait.seconds(null, 1);
-            var props = TS_FilePropertiesUtils.createPropertyReader(fileRes);
+            var props = TS_FilePropertiesUtils.createPropertyReader(fileCmd);
             if (props.isEmpty()) {
+                d.cr("watcher", "props.isEmpty()");
                 return;
             }
             List<Integer> bath_timers = TGS_ListUtils.of();
             IntStream.range(0, 16).forEachOrdered(i -> {
-                var val = TGS_CastUtils.toInteger(props.get().getProperty("bath_timer_0"));
+                var val = TGS_CastUtils.toInteger(props.get().getProperty(propsParamPrefix + i));
                 if (val == null) {
+                    d.cr("watcher", "param_null", propsParamPrefix + i);
                     return;
                 }
                 bath_timers.add(val);
             });
             if (bath_timers.size() != 16) {
+                d.cr("watcher", "bath_timers.size() != 16", bath_timers.size());
                 return;
             }
             mem_int_set_idx_val_or_values16.add(bath_timers);
-        }, TS_FileWatchUtils.Types.CREATE, TS_FileWatchUtils.Types.MODIFY);
+            d.cr("watcher", "cmd_added", bath_timers);
+        }, TS_FileWatchUtils.Types.MODIFY);
     }
 }

@@ -89,7 +89,6 @@ public class GUI extends javax.swing.JFrame {
 
         scrollReply = new javax.swing.JScrollPane();
         taReply = new javax.swing.JTextArea();
-        btnTestAll5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -100,21 +99,9 @@ public class GUI extends javax.swing.JFrame {
 
         getContentPane().add(scrollReply, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, 790, 108));
 
-        btnTestAll5.setText("test all 5");
-        btnTestAll5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTestAll5ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnTestAll5, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 130, 470, -1));
-
         setSize(new java.awt.Dimension(814, 557));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnTestAll5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTestAll5ActionPerformed
-        Main.mem_int_set_idx_val_or_values16.add(TGS_ListUtils.toList(6, 16));
-    }//GEN-LAST:event_btnTestAll5ActionPerformed
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> {
@@ -123,7 +110,6 @@ public class GUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnTestAll5;
     private javax.swing.JScrollPane scrollReply;
     public javax.swing.JTextArea taReply;
     // End of variables declaration//GEN-END:variables
