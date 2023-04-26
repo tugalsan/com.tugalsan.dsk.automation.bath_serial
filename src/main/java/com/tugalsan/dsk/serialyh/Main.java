@@ -94,6 +94,7 @@ public class Main {
             });
             if (bath_timers.size() != 16) {
                 d.cr("watcher", "bath_timers.size() != 16", bath_timers.size());
+                Main.gui.taReply.setText("ERROR reading values");
                 return;
             }
             cmdValues16.add(bath_timers);

@@ -25,35 +25,35 @@ public class GUI extends javax.swing.JFrame {
 
     public static List<String> lblNames_KüçükFosfat = List.of(
             "-", //0
-            "Yükleme", //1
-            "YağAlma", //2
-            "Durulama1", //3
-            "Durulama2", //4
-            "Durulama3", //5
-            "PasAlma", //6
-            "Durulama(P.A)", //7
-            "Altivasyon", //8
-            "T.Ç.Fosfat", //9
-            "Durulama(T.Ç.F)", //10
-            "Pasivasyon", //11
-            "Kurutma", //12
-            "Boşaltma", //13
+            "YÜ - Yükleme", //1
+            "YD - YağAlma", //2
+            "DU - Durulama1", //3
+            "DU - Durulama2", //4
+            "DU - Durulama3", //5
+            "PA - PasAlma", //6
+            "DU - Durulama(P.A)", //7
+            "FA - Aktivasyon", //8
+            "FF - T.Ç.Fosfat", //9
+            "DU - Durulama(T.Ç.F)", //10
+            "FV - Pasivasyon", //11
+            "KU - Kurutma", //12
+            "BO - Boşaltma", //13
             "-", //14
             "-" //15
     );
     public static List<String> lblNames_KüçükKromat = List.of(
             "-", //0
-            "Yükleme", //1
+            "YÜ - Yükleme", //1
             "Sıcak boya Sökme", //2
-            "YağAlma", //3
-            "Durulama1", //4
-            "Durulama2", //5
-            "Aşındırma (Al)", //6
-            "Durulama (Aşın.)", //7
-            "Durulama (Y.Kr.)", //8
-            "Kromat (Yeşil)", //9
-            "Kurutma", //10
-            "Boşaltma", //11
+            "YG - YağAlma", //3
+            "DU - Durulama1", //4
+            "DU - Durulama2", //5
+            "AA - Aşındırma (Al)", //6
+            "DU - Durulama (Aşın.)", //7
+            "DU - Durulama (Y.Kr.)", //8
+            "KY - Kromat (Yeşil)", //9
+            "KU - Kurutma", //10
+            "BO - Boşaltma", //11
             "-", //12
             "-", //13
             "-", //14
