@@ -71,7 +71,7 @@ public class Mem_Int {
     }
 
     public static Mem_Int of() {
-        var mem_int = TS_SerialComKinConyKC868_A32_R1_2.memInt_getAll();
+        var mem_int = TS_SerialComKinConyKC868_A32_R1_2.memInt_getAll(Main.COMX);
         return new Mem_Int(mem_int);
     }
     public Optional<List<Integer>> mem_int;

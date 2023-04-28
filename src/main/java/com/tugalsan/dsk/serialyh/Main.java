@@ -1,6 +1,7 @@
 package com.tugalsan.dsk.serialyh;
 
 import com.tugalsan.api.cast.client.TGS_CastUtils;
+import com.tugalsan.api.desktop.server.TS_DesktopDialogInfoUtils;
 import com.tugalsan.api.desktop.server.TS_DesktopFrameUtils;
 import com.tugalsan.api.file.properties.server.TS_FilePropertiesUtils;
 import com.tugalsan.api.file.server.TS_FileUtils;
@@ -13,6 +14,7 @@ import com.tugalsan.api.thread.server.TS_ThreadRun;
 import com.tugalsan.api.thread.server.TS_ThreadSafeLst;
 import com.tugalsan.api.thread.server.TS_ThreadWait;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -20,7 +22,7 @@ import java.util.stream.IntStream;
 
 //WHEN RUNNING IN NETBEANS, ALL DEPENDENCIES SHOULD HAVE TARGET FOLDER!
 //cd C:\me\codes\com.tugalsan\dsk\com.tugalsan.dsk.serialyh
-//java --enable-preview --add-modules jdk.incubator.concurrent -jar target/com.tugalsan.dsk.serialyh-1.0-SNAPSHOT-jar-with-dependencies.jar    
+//java --enable-preview --add-modules jdk.incubator.concurrent -jar target/com.tugalsan.dsk.serialyh-1.0-SNAPSHOT-jar-with-dependencies.jar USB-SERIAL CH340 (COM3)    
 public class Main {
 
     final private static TS_Log d = TS_Log.of(true, Main.class);
@@ -33,8 +35,29 @@ public class Main {
     final public static Path fileCmd = Path.of("C:", "com.tugalsan.dsk.serialyh", "cmd.txt");
     final public static Path fileRes = Path.of("C:", "com.tugalsan.dsk.serialyh", "res.txt");
     final public static String propsParamPrefix = "bath_timer_";
+    public static String COMX;
 
     public static void main(String... s) {
+        var portNames = TS_SerialComKinConyKC868_A32_R1_2.portNames();
+        if (s.length == 0) {
+            var sb = new StringBuilder()
+                    .append("USAGE: java --enable-preview --add-modules jdk.incubator.concurrent \\")
+                    .append("\n       -jar target/com.tugalsan.dsk.serialyh-1.0-SNAPSHOT-jar-with-dependencies.jar COMX");
+            if (portNames.isEmpty()) {
+                sb.append("\nERROR: NO PORT DETECTED!");
+            } else {
+                sb.append("\nPARAM OPTIONS:");
+                portNames.forEach(p -> {
+                    sb.append("\n ").append(p);
+                });
+            }
+            TS_DesktopDialogInfoUtils.show("HOW TO USE", sb.toString());
+            TS_ThreadWait.of(Duration.ofSeconds(10));
+            System.exit(0);
+            return;
+        }
+        COMX = s[0];
+        System.out.println("comX: [" + COMX + "]");
         TS_DesktopFrameUtils.create(() -> gui = new GUI());
         TS_ThreadRun.now(() -> {
             while (true) {
@@ -66,7 +89,7 @@ public class Main {
                     continue;
                 }
                 var lst = cmdValues16.popFirst(val -> true);
-                if (TS_SerialComKinConyKC868_A32_R1_2.memInt_setAll(lst)) {
+                if (TS_SerialComKinConyKC868_A32_R1_2.memInt_setAll(COMX, lst)) {
                     gui.taReply.setText("Değişiklik başarılı.");
                     TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileRes) + " CMD_DONE", fileRes, false);
                 } else {
