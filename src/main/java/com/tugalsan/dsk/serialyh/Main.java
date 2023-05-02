@@ -10,7 +10,9 @@ import com.tugalsan.api.file.server.TS_FileWatchUtils;
 import com.tugalsan.api.file.txt.server.TS_FileTxtUtils;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
+import com.tugalsan.api.pack.client.TGS_Pack2;
 import com.tugalsan.api.serialcom.kincony.server.KC868_A32_R1_2.TS_SerialComKinConyKC868_A32_R1_2;
+import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.TS_ThreadRun;
 import com.tugalsan.api.thread.server.TS_ThreadSafeLst;
 import com.tugalsan.api.thread.server.TS_ThreadWait;
@@ -102,7 +104,10 @@ public class Main {
                     continue;
                 }
                 var lst = cmdValues16.popFirst(val -> true);
-                if (TS_SerialComKinConyKC868_A32_R1_2.memInt_setAll(COMX, lst)) {
+                d.ce("set_lst", lst);
+                var lstIdx = TGS_StreamUtils.toLst(IntStream.range(0, lst.size()).filter(i -> lst.get(i) != 0));
+                d.ce("set_osc", lstIdx);
+                if (TS_SerialComKinConyKC868_A32_R1_2.memInt_setAll(COMX, lst) && TS_SerialComKinConyKC868_A32_R1_2.digitalOut_oscilateAll(COMX, lstIdx)) {
                     gui.taReply.setText("Değişiklik başarılı.");
                     TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileRes) + " CMD_DONE", fileRes, false);
                 } else {
