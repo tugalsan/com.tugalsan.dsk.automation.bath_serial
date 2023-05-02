@@ -14,8 +14,9 @@ public class Mem_Int {
         OK, ERROR_SIZE, ERROR_EMPTY
     }
 
-    private Mem_Int(Optional<List<Integer>> mem_int) {
+    private Mem_Int(Optional<List<Integer>> mem_int, Optional<Integer> mode) {
         this.mem_int = mem_int;
+        this.mode = mode;
         if (mem_int.isEmpty()) {
             status = STATUS.ERROR_EMPTY;
             return;
@@ -72,9 +73,11 @@ public class Mem_Int {
 
     public static Mem_Int of() {
         var mem_int = TS_SerialComKinConyKC868_A32_R1_2.memInt_getAll(Main.COMX);
-        return new Mem_Int(mem_int);
+        var mode = TS_SerialComKinConyKC868_A32_R1_2.mode_getIdx(Main.COMX);
+        return new Mem_Int(mem_int, mode);
     }
     public Optional<List<Integer>> mem_int;
+    public Optional<Integer> mode;
     public STATUS status;
     public List<Boolean> lstDI = TGS_ListUtils.of();
     public List<Boolean> lstDO = TGS_ListUtils.of();

@@ -1,6 +1,7 @@
 package com.tugalsan.dsk.serialyh;
 
 import com.tugalsan.api.cast.client.TGS_CastUtils;
+import com.tugalsan.api.coronator.client.TGS_Coronator;
 import com.tugalsan.api.desktop.server.TS_DesktopDialogInfoUtils;
 import com.tugalsan.api.desktop.server.TS_DesktopFrameUtils;
 import com.tugalsan.api.file.properties.server.TS_FilePropertiesUtils;
@@ -30,6 +31,8 @@ public class Main {
     public static volatile Mem_Int mem_int_last;
 
     final public static TS_ThreadSafeLst<List<Integer>> cmdValues16 = new TS_ThreadSafeLst();
+    public static volatile int mode = 0;
+    public static volatile int modeRequested = 1;
     public static volatile GUI gui;
 
     final public static Path fileCmd = Path.of("C:", "com.tugalsan.dsk.serialyh", "cmd.txt");
@@ -65,8 +68,14 @@ public class Main {
                     mem_int_last = Mem_Int.of();
                     if (gui != null) {
                         gui.taReply.setText(mem_int_last.toString());
+                        gui.taReply.append("\nmode:" + TGS_Coronator.ofStr()
+                                .anoint(val -> "Okunuyor")
+                                .anointIf(val -> mem_int_last.mode.isPresent() && mem_int_last.mode.get() == 0, val -> "DÜĞME TEST")
+                                .anointIf(val -> mem_int_last.mode.isPresent() && mem_int_last.mode.get() == 1, val -> "YH PROGRAMI")
+                                .coronate()
+                        );
                         if (mem_int_last.status == Mem_Int.STATUS.OK) {
-                            IntStream.range(0, 16).forEachOrdered(i -> {
+                            IntStream.range(0, 16).forEachOrdered(i -> {//BUTTON UPDATE
                                 var memVal = mem_int_last.mem_int.get().get(32 * 3 + i);
                                 var lstStr = gui.lstValues.get(i);
                                 if (Objects.equals(memVal, lstStr)) {
@@ -85,6 +94,10 @@ public class Main {
                     }
                     if (!TS_FileUtils.isExistFile(fileRes)) {
                         TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileCmd) + " CMD_INIT", fileRes, false);
+                    }
+                    if (mem_int_last.mode.orElse(0) == 0) {
+                        var result = TS_SerialComKinConyKC868_A32_R1_2.mode_setIdx(COMX, modeRequested);
+                        d.ce("mode_setIdx", modeRequested, result);
                     }
                     continue;
                 }
