@@ -1,0 +1,4 @@
+--patch-module
+com.tugalsan.dsk.serialyh=_
+--add-reads
+com.tugalsan.dsk.serialyh=ALL-UNNAMED
