@@ -10,7 +10,6 @@ import com.tugalsan.api.file.server.TS_FileWatchUtils;
 import com.tugalsan.api.file.txt.server.TS_FileTxtUtils;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.tuple.client.TGS_Tuple2;
 import com.tugalsan.api.serialcom.kincony.server.KC868_A32_R1_2.TS_SerialComKinConyKC868_A32_R1_2;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.TS_ThreadRun;

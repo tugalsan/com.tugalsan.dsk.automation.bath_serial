@@ -2,7 +2,6 @@ module com.tugalsan.dsk.serialyh {
     requires gwt.user;
     requires AbsoluteLayout.RELEASE170;
     requires com.tugalsan.api.time;
-    requires com.tugalsan.api.tuple;
     requires com.tugalsan.api.file;
     requires com.tugalsan.api.file.properties;
     requires com.tugalsan.api.file.txt;
