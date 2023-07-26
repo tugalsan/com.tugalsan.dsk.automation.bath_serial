@@ -62,7 +62,7 @@ public class Main {
         }
         COMX = s[0];
         System.out.println("comX: [" + COMX + "]");
-        TS_DesktopMainUtils.invokeLater(() -> gui = new GUI());
+        TS_DesktopMainUtils.setThemeAndinvokeLaterAndFixTheme(() -> gui = new GUI());
         TS_ThreadRun.now(() -> {
             while (true) {
                 if (cmdValues16.isEmpty()) {
