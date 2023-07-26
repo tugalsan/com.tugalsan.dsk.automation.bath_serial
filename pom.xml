@@ -66,6 +66,7 @@
         <exec.mainClass>com.tugalsan.dsk.serialyh.Main</exec.mainClass>
     </properties>
     <build>
+        <finalName>${artifactId}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -95,12 +96,10 @@
                 <version>3.11.0</version>
                 <configuration>
                     <release>19</release>
-                                        <compilerArgs>
+                    <compilerArgs>
                         <arg>--enable-preview</arg>
                         <arg>--add-modules=jdk.incubator.concurrent</arg>
                     </compilerArgs>
-
-                    
                 </configuration>
             </plugin>
         </plugins>

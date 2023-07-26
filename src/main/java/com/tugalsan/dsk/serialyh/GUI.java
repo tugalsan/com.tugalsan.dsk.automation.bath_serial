@@ -62,7 +62,7 @@ public class GUI extends javax.swing.JFrame {
 
     public GUI() {
         setTitle("MESA METAL YÜZEY HAZIRLAMA PROGRAMI");
-        TS_DesktopFrameUtils.setThemeDarkLAF(this);
+        TS_DesktopThemeUtils.setThemeDarkLAF(this);
         initComponents();
         var offsetX = 6;
         var offsetY = 120;

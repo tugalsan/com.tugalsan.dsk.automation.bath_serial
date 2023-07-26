@@ -3,7 +3,7 @@ package com.tugalsan.dsk.serialyh;
 import com.tugalsan.api.cast.client.TGS_CastUtils;
 import com.tugalsan.api.coronator.client.TGS_Coronator;
 import com.tugalsan.api.desktop.server.TS_DesktopDialogInfoUtils;
-import com.tugalsan.api.desktop.server.TS_DesktopFrameUtils;
+import com.tugalsan.api.desktop.server.TS_DesktopMainUtils;
 import com.tugalsan.api.file.properties.server.TS_FilePropertiesUtils;
 import com.tugalsan.api.file.server.TS_FileUtils;
 import com.tugalsan.api.file.server.TS_FileWatchUtils;
@@ -62,7 +62,7 @@ public class Main {
         }
         COMX = s[0];
         System.out.println("comX: [" + COMX + "]");
-        TS_DesktopFrameUtils.create(() -> gui = new GUI());
+        TS_DesktopMainUtils.invokeLater(() -> gui = new GUI());
         TS_ThreadRun.now(() -> {
             while (true) {
                 if (cmdValues16.isEmpty()) {
