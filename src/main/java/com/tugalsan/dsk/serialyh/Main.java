@@ -13,9 +13,9 @@ import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.serialcom.kincony.server.KC868_A32_R1_2.TS_SerialComKinConyKC868_A32_R1_2;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsync;
-import com.tugalsan.api.thread.server.safe.TS_ThreadSafeLst;
+import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.thread.server.TS_ThreadWait;
-import com.tugalsan.api.thread.server.safe.TS_ThreadSafeTrigger;
+import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
@@ -32,7 +32,7 @@ public class Main {
 
     public static volatile Mem_Int mem_int_last;
 
-    final public static TS_ThreadSafeLst<List<Integer>> cmdValues16 = new TS_ThreadSafeLst();
+    final public static TS_ThreadSyncLst<List<Integer>> cmdValues16 = new TS_ThreadSyncLst();
     public static volatile int mode = 0;
     public static volatile int modeRequested = 1;
     public static volatile GUI gui;
@@ -42,7 +42,7 @@ public class Main {
     final public static String propsParamPrefix = "bath_timer_";
     public static String COMX;
 
-    public static TS_ThreadSafeTrigger killTrigger = TS_ThreadSafeTrigger.of();
+    public static TS_ThreadSyncTrigger killTrigger = TS_ThreadSyncTrigger.of();
 
     public static void main(String... s) {
         var portNames = TS_SerialComKinConyKC868_A32_R1_2.portNames();
