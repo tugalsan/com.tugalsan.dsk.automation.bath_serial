@@ -72,8 +72,8 @@ public class Mem_Int {
     }
 
     public static Mem_Int of() {
-        var mem_int = TS_SerialComKinConyKC868_A32_R1_2.memInt_getAll(Main.COMX);
-        var mode = TS_SerialComKinConyKC868_A32_R1_2.mode_getIdx(Main.COMX);
+        var mem_int = TS_SerialComKinConyKC868_A32_R1_2.memInt_getAll(Main.killTrigger, Main.COMX);
+        var mode = TS_SerialComKinConyKC868_A32_R1_2.mode_getIdx(Main.killTrigger, Main.COMX);
         return new Mem_Int(mem_int, mode);
     }
     public Optional<List<Integer>> mem_int;

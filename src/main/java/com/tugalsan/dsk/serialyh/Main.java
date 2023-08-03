@@ -12,9 +12,10 @@ import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.serialcom.kincony.server.KC868_A32_R1_2.TS_SerialComKinConyKC868_A32_R1_2;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
-import com.tugalsan.api.thread.server.struct.async.TS_ThreadAsync;
+import com.tugalsan.api.thread.server.async.TS_ThreadAsync;
 import com.tugalsan.api.thread.server.safe.TS_ThreadSafeLst;
 import com.tugalsan.api.thread.server.TS_ThreadWait;
+import com.tugalsan.api.thread.server.safe.TS_ThreadSafeTrigger;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
@@ -41,6 +42,8 @@ public class Main {
     final public static String propsParamPrefix = "bath_timer_";
     public static String COMX;
 
+    public static TS_ThreadSafeTrigger killTrigger = TS_ThreadSafeTrigger.of();
+
     public static void main(String... s) {
         var portNames = TS_SerialComKinConyKC868_A32_R1_2.portNames();
         if (s.length == 0) {
@@ -56,14 +59,14 @@ public class Main {
                 });
             }
             TS_DesktopDialogInfoUtils.show("HOW TO USE", sb.toString());
-            TS_ThreadWait.of(Duration.ofSeconds(10));
+            TS_ThreadWait.of("wait.main", Main.killTrigger, Duration.ofSeconds(10));
             System.exit(0);
             return;
         }
         COMX = s[0];
         System.out.println("comX: [" + COMX + "]");
         TS_DesktopMainUtils.setThemeAndinvokeLaterAndFixTheme(() -> gui = new GUI());
-        TS_ThreadAsync.now(() -> {
+        TS_ThreadAsync.now(Main.killTrigger, kt -> {
             while (true) {
                 if (cmdValues16.isEmpty()) {
                     mem_int_last = Mem_Int.of();
@@ -97,7 +100,7 @@ public class Main {
                         TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileCmd) + " CMD_INIT", fileRes, false);
                     }
                     if (mem_int_last.mode.orElse(0) == 0) {
-                        var result = TS_SerialComKinConyKC868_A32_R1_2.mode_setIdx(COMX, modeRequested);
+                        var result = TS_SerialComKinConyKC868_A32_R1_2.mode_setIdx(killTrigger, COMX, modeRequested);
                         d.ce("mode_setIdx", modeRequested, result);
                     }
                     continue;
@@ -106,7 +109,7 @@ public class Main {
                 d.ce("set_lst", lst);
                 var lstIdx = TGS_StreamUtils.toLst(IntStream.range(0, lst.size()).filter(i -> lst.get(i) != 0));
                 d.ce("set_osc", lstIdx);
-                if (TS_SerialComKinConyKC868_A32_R1_2.memInt_setAll(COMX, lst) && TS_SerialComKinConyKC868_A32_R1_2.digitalOut_oscilateAll(COMX, lstIdx)) {
+                if (TS_SerialComKinConyKC868_A32_R1_2.memInt_setAll(Main.killTrigger, COMX, lst) && TS_SerialComKinConyKC868_A32_R1_2.digitalOut_oscilateAll(Main.killTrigger, COMX, lstIdx)) {
                     gui.taReply.setText("Değişiklik başarılı.");
                     TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileRes) + " CMD_DONE", fileRes, false);
                 } else {
@@ -115,9 +118,9 @@ public class Main {
                 }
             }
         });
-        TS_FileWatchUtils.file(fileCmd, () -> {
+        TS_FileWatchUtils.file(Main.killTrigger, fileCmd, () -> {
             d.cr("watcher", "detected");
-            TS_ThreadWait.seconds(null, 1);
+            TS_ThreadWait.seconds("wait.watch", Main.killTrigger, 1);
             var props = TS_FilePropertiesUtils.createPropertyReader(fileCmd);
             if (props.isEmpty()) {
                 d.cr("watcher", "props.isEmpty()");
