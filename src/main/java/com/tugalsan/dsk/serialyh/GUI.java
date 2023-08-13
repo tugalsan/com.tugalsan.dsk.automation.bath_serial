@@ -15,7 +15,7 @@ public class GUI extends javax.swing.JFrame {
     private List<JButton> lstBtns = TGS_ListUtils.of();
 
     private Optional<List<Integer>> getLblValues() {
-        var result = TGS_StreamUtils.toLst(
+        List<Integer> result = TGS_StreamUtils.toLst(
                 lstValues.stream()
                         .map(lbl -> TGS_CastUtils.toInteger(lbl.getText()))
                         .filter(val -> val != null)
@@ -23,7 +23,7 @@ public class GUI extends javax.swing.JFrame {
         return result.size() == 16 ? Optional.of(result) : Optional.empty();
     }
 
-    public static List<String> lblNames_KüçükFosfat = List.of(
+    public static List<String> lblNames_KüçükFosfat = TGS_ListUtils.of(
             "-", //0
             "YÜ - Yükleme", //1
             "YD - YağAlma", //2
@@ -41,7 +41,7 @@ public class GUI extends javax.swing.JFrame {
             "-", //14
             "-" //15
     );
-    public static List<String> lblNames_KüçükKromat = List.of(
+    public static List<String> lblNames_KüçükKromat = TGS_ListUtils.of(
             "-", //0
             "YÜ - Yükleme", //1
             "Sıcak boya Sökme", //2
@@ -63,12 +63,12 @@ public class GUI extends javax.swing.JFrame {
     public GUI() {
         setTitle("MESA METAL YÜZEY HAZIRLAMA PROGRAMI");
         initComponents();
-        var offsetX = 6;
-        var offsetY = 120;
-        var widthName = 150;
-        var widthValue = 75;
-        var height = 24;
-        var gap = 2;
+        int offsetX = 6;
+        int offsetY = 120;
+        int widthName = 150;
+        int widthValue = 75;
+        int height = 24;
+        int gap = 2;
         IntStream.range(0, 16).forEachOrdered(i -> {
             lstValues.add(new JLabel());
             lstBtns.add(new JButton(lblNames_KüçükFosfat.get(i) + ":"));
@@ -77,9 +77,9 @@ public class GUI extends javax.swing.JFrame {
         });
         IntStream.range(0, 16).forEachOrdered(i -> {
             lstBtns.get(i).addActionListener(e -> {
-                var oldVal = TGS_CastUtils.toInteger(this.lstValues.get(i).getText());
-                var newVal = TS_DesktopDialogInputNumberUtils.show("Sayı Girin", oldVal);
-                if (newVal.isEmpty()) {
+                Integer oldVal = TGS_CastUtils.toInteger(this.lstValues.get(i).getText());
+                Optional<Integer> newVal = TS_DesktopDialogInputNumberUtils.show("Sayı Girin", oldVal);
+                if (!newVal.isPresent()) {
                     TS_DesktopDialogInfoUtils.show("HATA", "Bir sayı olmalıydı.");
                     return;
                 }
@@ -87,7 +87,7 @@ public class GUI extends javax.swing.JFrame {
                     TS_DesktopDialogInfoUtils.show("HATA", "0 dan büyük olmalıydı.");
                     return;
                 }
-                var lblValues = getLblValues();
+                Optional<List<Integer>> lblValues = getLblValues();
                 if (lblValues.isPresent()) {
                     lblValues.get().set(i, newVal.get());
                     Main.cmdValues16.add(lblValues.get());

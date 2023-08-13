@@ -17,7 +17,7 @@ public class Mem_Int {
     private Mem_Int(Optional<List<Integer>> mem_int, Optional<Integer> mode) {
         this.mem_int = mem_int;
         this.mode = mode;
-        if (mem_int.isEmpty()) {
+        if (!mem_int.isPresent()) {
             status = STATUS.ERROR_EMPTY;
             return;
         }
@@ -35,45 +35,45 @@ public class Mem_Int {
 
     @Override
     public String toString() {
-        var sb = new StringBuilder();
-        switch (status) {
-            case ERROR_EMPTY ->
-                sb
-                        .append(time.toString_timeOnly())
-                        .append(" ERROR_EMPTY");
-            case ERROR_SIZE ->
-                sb
-                        .append(time.toString_timeOnly())
-                        .append(" ERROR_SIZE [").append(mem_int.get().size()).append("] -> ")
-                        .append(mem_int);
-            case OK ->
-                sb
-                        .append(time.toString_timeOnly())
-                        .append(" lstDI: ")
-                        .append(lstDI.stream().map(b -> b ? 1 : 0).map(i -> String.valueOf(i)).collect(Collectors.joining(", ")))
-                        .append("\n")
-                        .append(time.toString_timeOnly())
-                        .append(" lstDO: ")
-                        .append(lstDO.stream().map(b -> b ? 1 : 0).map(i -> String.valueOf(i)).collect(Collectors.joining(", ")))
-                        .append("\n")
-                        .append(time.toString_timeOnly())
-                        .append(" lstOS: ")
-                        .append(lstOS.stream().map(b -> b ? 1 : 0).map(i -> String.valueOf(i)).collect(Collectors.joining(", ")))
-                        .append("\n")
-                        .append(time.toString_timeOnly())
-                        .append(" lstTI: ")
-                        .append(lstTI.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(", ")));
-            default ->
-                sb
-                        .append(time.toString_timeOnly())
-                        .append(" UNKNOWN_STATUS");
+        StringBuilder sb = new StringBuilder();
+        if (status == STATUS.ERROR_EMPTY) {
+            sb
+                    .append(time.toString_timeOnly())
+                    .append(" ERROR_EMPTY");
+        } else if (status == STATUS.ERROR_SIZE) {
+            sb
+                    .append(time.toString_timeOnly())
+                    .append(" ERROR_SIZE [").append(mem_int.get().size()).append("] -> ")
+                    .append(mem_int);
+        } else if (status == STATUS.OK) {
+            sb
+                    .append(time.toString_timeOnly())
+                    .append(" lstDI: ")
+                    .append(lstDI.stream().map(b -> b ? 1 : 0).map(i -> String.valueOf(i)).collect(Collectors.joining(", ")))
+                    .append("\n")
+                    .append(time.toString_timeOnly())
+                    .append(" lstDO: ")
+                    .append(lstDO.stream().map(b -> b ? 1 : 0).map(i -> String.valueOf(i)).collect(Collectors.joining(", ")))
+                    .append("\n")
+                    .append(time.toString_timeOnly())
+                    .append(" lstOS: ")
+                    .append(lstOS.stream().map(b -> b ? 1 : 0).map(i -> String.valueOf(i)).collect(Collectors.joining(", ")))
+                    .append("\n")
+                    .append(time.toString_timeOnly())
+                    .append(" lstTI: ")
+                    .append(lstTI.stream().map(i -> String.valueOf(i)).collect(Collectors.joining(", ")));
+
+        } else {
+            sb
+                    .append(time.toString_timeOnly())
+                    .append(" UNKNOWN_STATUS");
         }
         return sb.toString();
     }
 
     public static Mem_Int of() {
-        var mem_int = TS_SerialComKinConyKC868_A32_R1_2.memInt_getAll(Main.killTrigger, Main.COMX);
-        var mode = TS_SerialComKinConyKC868_A32_R1_2.mode_getIdx(Main.killTrigger, Main.COMX);
+        Optional<List<Integer>> mem_int = TS_SerialComKinConyKC868_A32_R1_2.memInt_getAll(Main.killTrigger, Main.COMX);
+        Optional<Integer> mode = TS_SerialComKinConyKC868_A32_R1_2.mode_getIdx(Main.killTrigger, Main.COMX);
         return new Mem_Int(mem_int, mode);
     }
     public Optional<List<Integer>> mem_int;
