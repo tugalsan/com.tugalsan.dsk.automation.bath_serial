@@ -1,0 +1,4 @@
+--patch-module
+com.tugalsan.dsk.trainer=_
+--add-reads
+com.tugalsan.dsk.trainer=ALL-UNNAMED
