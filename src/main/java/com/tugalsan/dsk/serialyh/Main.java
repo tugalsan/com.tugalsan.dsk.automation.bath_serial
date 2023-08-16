@@ -29,7 +29,7 @@ import javax.swing.JLabel;
 
 //WHEN RUNNING IN NETBEANS, ALL DEPENDENCIES SHOULD HAVE TARGET FOLDER!
 //cd C:\me\codes\com.tugalsan\dsk\com.tugalsan.dsk.serialyh
-//java --enable-preview --add-modules jdk.incubator.concurrent -jar target/com.tugalsan.dsk.serialyh-1.0-SNAPSHOT-jar-with-dependencies.jar USB-SERIAL CH340 (COM3)    
+//java --enable-preview --add-modules jdk.incubator.concurrent -jar target/com.tugalsan.dsk.serialyh-1.0-SNAPSHOT-jar-with-dependencies.jar COM3    
 public class Main {
 
     final private static TS_Log d = TS_Log.of(true, Main.class);
