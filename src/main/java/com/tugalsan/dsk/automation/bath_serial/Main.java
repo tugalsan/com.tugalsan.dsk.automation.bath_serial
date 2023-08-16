@@ -28,8 +28,8 @@ import java.util.stream.IntStream;
 import javax.swing.JLabel;
 
 //WHEN RUNNING IN NETBEANS, ALL DEPENDENCIES SHOULD HAVE TARGET FOLDER!
-//cd C:\me\codes\com.tugalsan\dsk\com.tugalsan.dsk.serialyh
-//java --enable-preview --add-modules jdk.incubator.concurrent -jar target/com.tugalsan.dsk.serialyh-1.0-SNAPSHOT-jar-with-dependencies.jar COM3    
+//cd C:\me\codes\com.tugalsan\dsk\com.tugalsan.dsk.automation.bath_serial
+//java --enable-preview --add-modules jdk.incubator.concurrent -jar target/com.tugalsan.dsk.automation.bath_serial-1.0-SNAPSHOT-jar-with-dependencies.jar COM3    
 public class Main {
 
     final private static TS_Log d = TS_Log.of(true, Main.class);
@@ -41,8 +41,8 @@ public class Main {
     public static volatile int modeRequested = 1;
     public static volatile GUI gui;
 
-    final public static Path fileCmd = Paths.get("C:", "com.tugalsan.dsk.serialyh", "cmd.txt");
-    final public static Path fileRes = Paths.get("C:", "com.tugalsan.dsk.serialyh", "res.txt");
+    final public static Path fileCmd = Paths.get("C:", "com.tugalsan.dsk.automation.bath_serial", "cmd.txt");
+    final public static Path fileRes = Paths.get("C:", "com.tugalsan.dsk.automation.bath_serial", "res.txt");
     final public static String propsParamPrefix = "bath_timer_";
     public static String COMX;
 
@@ -52,7 +52,7 @@ public class Main {
         List<String> portNames = TS_SerialComKinConyKC868_A32_R1_2.portNames();
         var sb = new StringBuilder()
                 .append("USAGE: java --enable-preview --add-modules jdk.incubator.concurrent \\")
-                .append("\n       -jar target/com.tugalsan.dsk.serialyh-1.0-SNAPSHOT-jar-with-dependencies.jar COMX");
+                .append("\n       -jar target/com.tugalsan.dsk.automation.bath_serial-1.0-SNAPSHOT-jar-with-dependencies.jar COMX");
         if (portNames.isEmpty()) {
             sb.append("\nERROR: NO PORT DETECTED!");
         } else {
