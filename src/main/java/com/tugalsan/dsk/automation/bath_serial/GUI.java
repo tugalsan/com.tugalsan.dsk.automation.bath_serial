@@ -1,4 +1,4 @@
-package com.tugalsan.dsk.serialyh;
+package com.tugalsan.dsk.automation.bath_serial;
 
 import com.tugalsan.api.cast.client.*;
 import com.tugalsan.api.desktop.server.*;

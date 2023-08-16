@@ -1,4 +1,4 @@
 --patch-module
-com.tugalsan.dsk.trainer=_
+com.tugalsan.dsk.automation.bath_serial=_
 --add-reads
-com.tugalsan.dsk.trainer=ALL-UNNAMED
+com.tugalsan.dsk.automation.bath_serial=ALL-UNNAMED

@@ -1,4 +1,4 @@
-package com.tugalsan.dsk.serialyh;
+package com.tugalsan.dsk.automation.bath_serial;
 
 import com.tugalsan.api.cast.client.TGS_CastUtils;
 import com.tugalsan.api.coronator.client.TGS_Coronator;

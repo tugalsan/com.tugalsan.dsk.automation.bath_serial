@@ -1,4 +1,4 @@
-module com.tugalsan.dsk.trainer {
+module com.tugalsan.dsk.automation.bath_serial {
     requires java.desktop;
     requires AbsoluteLayout.RELEASE180;
     requires com.tugalsan.api.log;
