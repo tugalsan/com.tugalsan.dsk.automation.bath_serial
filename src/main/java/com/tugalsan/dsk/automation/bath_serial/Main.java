@@ -49,10 +49,10 @@ public class Main {
     public static TS_ThreadSyncTrigger killTrigger = TS_ThreadSyncTrigger.of();
 
     public static void main(String... s) {
-        List<String> portNames = TS_SerialComKinConyKC868_A32_R1_2.portNames();
         var sb = new StringBuilder()
                 .append("USAGE: java --enable-preview --add-modules jdk.incubator.concurrent \\")
                 .append("\n       -jar target/com.tugalsan.dsk.automation.bath_serial-1.0-SNAPSHOT-jar-with-dependencies.jar COMX");
+        List<String> portNames = TS_SerialComKinConyKC868_A32_R1_2.portNames();
         if (portNames.isEmpty()) {
             sb.append("\nERROR: NO PORT DETECTED!");
         } else {
@@ -63,6 +63,7 @@ public class Main {
         }
         if (portNames.isEmpty()) {
             TS_DesktopDialogInfoUtils.show("HOW TO USE (WARNING: CLI PORT-NAME NOT PRESENTED)", sb.toString());
+            TS_ThreadWait.seconds(null, null, 5);
             System.exit(0);
         }
         if (s.length == 0) {
@@ -75,6 +76,7 @@ public class Main {
         } else {
             COMX = portNames.stream().filter(pn -> Objects.equals(s[0], pn)).findAny().orElse(null);
             TS_DesktopDialogInfoUtils.show("HOW TO USE (WARNING: CLI PORT-NAME WRONG)", sb.toString());
+            TS_ThreadWait.seconds(null, null, 5);
             System.exit(0);
         }
         System.out.println("comX: [" + COMX + "]");
