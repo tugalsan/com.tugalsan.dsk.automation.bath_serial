@@ -3,6 +3,7 @@ package com.tugalsan.dsk.serialyh;
 import com.tugalsan.api.cast.client.TGS_CastUtils;
 import com.tugalsan.api.coronator.client.TGS_Coronator;
 import com.tugalsan.api.desktop.server.TS_DesktopDialogInfoUtils;
+import com.tugalsan.api.desktop.server.TS_DesktopDialogInputListUtils;
 import com.tugalsan.api.desktop.server.TS_DesktopMainUtils;
 import com.tugalsan.api.file.properties.server.TS_FilePropertiesUtils;
 import com.tugalsan.api.file.server.TS_FileUtils;
@@ -18,7 +19,6 @@ import com.tugalsan.api.thread.server.TS_ThreadWait;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -50,24 +50,33 @@ public class Main {
 
     public static void main(String... s) {
         List<String> portNames = TS_SerialComKinConyKC868_A32_R1_2.portNames();
-        if (s.length == 0) {
-            StringBuilder sb = new StringBuilder()
-                    .append("USAGE: java --enable-preview --add-modules jdk.incubator.concurrent \\")
-                    .append("\n       -jar target/com.tugalsan.dsk.serialyh-1.0-SNAPSHOT-jar-with-dependencies.jar COMX");
-            if (portNames.isEmpty()) {
-                sb.append("\nERROR: NO PORT DETECTED!");
-            } else {
-                sb.append("\nPARAM OPTIONS:");
-                portNames.forEach(p -> {
-                    sb.append("\n ").append(p);
-                });
-            }
-            TS_DesktopDialogInfoUtils.show("HOW TO USE", sb.toString());
-            TS_ThreadWait.of("wait.main", Main.killTrigger, Duration.ofSeconds(10));
-            System.exit(0);
-            return;
+        var sb = new StringBuilder()
+                .append("USAGE: java --enable-preview --add-modules jdk.incubator.concurrent \\")
+                .append("\n       -jar target/com.tugalsan.dsk.serialyh-1.0-SNAPSHOT-jar-with-dependencies.jar COMX");
+        if (portNames.isEmpty()) {
+            sb.append("\nERROR: NO PORT DETECTED!");
+        } else {
+            sb.append("\nPARAM OPTIONS:");
+            portNames.forEach(p -> {
+                sb.append("\n ").append(p);
+            });
         }
-        COMX = s[0];
+        if (portNames.isEmpty()) {
+            TS_DesktopDialogInfoUtils.show("HOW TO USE (WARNING: CLI PORT-NAME NOT PRESENTED)", sb.toString());
+            System.exit(0);
+        }
+        if (s.length == 0) {
+            var portNameIdx = TS_DesktopDialogInputListUtils.show(null, COMX, COMX, 0, portNames).orElse(null);
+            if (portNameIdx == null) {
+                System.exit(0);
+            }
+            COMX = portNames.get(portNameIdx);
+            return;
+        } else {
+            COMX = portNames.stream().filter(pn -> Objects.equals(s[0], pn)).findAny().orElse(null);
+            TS_DesktopDialogInfoUtils.show("HOW TO USE (WARNING: CLI PORT-NAME WRONG)", sb.toString());
+            System.exit(0);
+        }
         System.out.println("comX: [" + COMX + "]");
         TS_DesktopMainUtils.setThemeAndinvokeLaterAndFixTheme(() -> gui = new GUI());
         TS_ThreadAsync.now(Main.killTrigger, kt -> {
