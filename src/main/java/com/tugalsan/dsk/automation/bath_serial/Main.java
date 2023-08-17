@@ -69,10 +69,10 @@ public class Main {
         if (s.length == 0) {
             var portNameIdx = TS_DesktopDialogInputListUtils.show(null, COMX, COMX, 0, portNames).orElse(null);
             if (portNameIdx == null) {
+                d.cr("main", "Exit by cancel.");
                 System.exit(0);
             }
             COMX = portNames.get(portNameIdx);
-            return;
         } else {
             COMX = portNames.stream().filter(pn -> Objects.equals(s[0], pn)).findAny().orElse(null);
             TS_DesktopDialogInfoUtils.show("HOW TO USE (WARNING: CLI PORT-NAME WRONG)", sb.toString());
