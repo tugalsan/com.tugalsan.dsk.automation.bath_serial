@@ -1,0 +1,4 @@
+--patch-module
+com.tugalsan.dsk.automation.bath_serial=_
+--add-reads
+com.tugalsan.dsk.automation.bath_serial=ALL-UNNAMED

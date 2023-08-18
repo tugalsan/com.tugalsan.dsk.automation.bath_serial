@@ -49,23 +49,36 @@ public class Main {
     public static TS_ThreadSyncTrigger killTrigger = TS_ThreadSyncTrigger.of();
 
     public static void main(String... s) {
+        //PREPARE INFO
         var sb = new StringBuilder()
                 .append("USAGE: java --enable-preview --add-modules jdk.incubator.concurrent \\")
                 .append("\n       -jar target/com.tugalsan.dsk.automation.bath_serial-1.0-SNAPSHOT-jar-with-dependencies.jar COMX");
-        List<String> portNames = TS_SerialComKinConyKC868_A32_R1_2.portNames();
+        List<String> portNamesFull = TS_SerialComKinConyKC868_A32_R1_2.listPortNamesFull();
+        List<String> portNames = TS_SerialComKinConyKC868_A32_R1_2.listPortNames();
         if (portNames.isEmpty()) {
             sb.append("\nERROR: NO PORT DETECTED!");
         } else {
             sb.append("\nPARAM OPTIONS:");
-            portNames.forEach(p -> {
-                sb.append("\n ").append(p);
+            IntStream.range(0, Math.min(portNames.size(), portNamesFull.size())).forEachOrdered(i -> {
+                sb.append("\n ").append(portNames.get(i)).append(": ").append(portNamesFull.get(i));
             });
         }
+        //EXIT IF PORT LIST EMPTY
         if (portNames.isEmpty()) {
             TS_DesktopDialogInfoUtils.show("HOW TO USE (WARNING: CLI PORT-NAME NOT PRESENTED)", sb.toString());
             TS_ThreadWait.seconds(null, null, 5);
             System.exit(0);
         }
+        //IF PORT GIVEN ON CLI, CHECK
+        if (s.length != 0) {
+            COMX = portNames.stream().filter(pn -> Objects.equals(s[0], pn)).findAny().orElse(null);
+            if (COMX == null) {
+                TS_DesktopDialogInfoUtils.show("HOW TO USE (WARNING: CLI PORT-NAME WRONG)", sb.toString());
+                TS_ThreadWait.seconds(null, null, 5);
+                System.exit(0);
+            }
+        }
+        //IF PORT NOT GIVEN, ASK
         if (s.length == 0) {
             var portNameIdx = TS_DesktopDialogInputListUtils.show(null, COMX, COMX, 0, portNames).orElse(null);
             if (portNameIdx == null) {
@@ -73,18 +86,20 @@ public class Main {
                 System.exit(0);
             }
             COMX = portNames.get(portNameIdx);
-        } else {
-            COMX = portNames.stream().filter(pn -> Objects.equals(s[0], pn)).findAny().orElse(null);
-            TS_DesktopDialogInfoUtils.show("HOW TO USE (WARNING: CLI PORT-NAME WRONG)", sb.toString());
-            TS_ThreadWait.seconds(null, null, 5);
-            System.exit(0);
         }
-        System.out.println("comX: [" + COMX + "]");
+        //PRINT DECIDED PORT
+        System.out.println("Selected Port: [" + COMX + "]");
+
+        //SHOW GUI
         TS_DesktopMainUtils.setThemeAndinvokeLaterAndFixTheme(() -> gui = new GUI());
+
+        //DO STH I DONT REMEMBER 
         TS_ThreadAsync.now(Main.killTrigger, kt -> {
             while (true) {
+                //IF cmdValues16 IS EMPTY
                 if (cmdValues16.isEmpty()) {
                     mem_int_last = Mem_Int.of();
+                    //IF GUI AVAILABLE UPDATE RENDERED ITEMS
                     if (gui != null) {
                         gui.taReply.setText(mem_int_last.toString());
                         gui.taReply.append("\nmode:" + TGS_Coronator.ofStr()
@@ -104,6 +119,7 @@ public class Main {
                             });
                         }
                     }
+                    //IF fileCmd NOT EXISTS FILL IT
                     if (!TS_FileUtils.isExistFile(fileCmd)) {
                         StringJoiner sj = new StringJoiner("\n");
                         IntStream.range(0, 16).forEachOrdered(i -> {
@@ -111,15 +127,18 @@ public class Main {
                         });
                         TS_FileTxtUtils.toFile(sj.toString(), fileCmd, false);
                     }
+                    //IF fileRes NOT EXISTS FILL IT
                     if (!TS_FileUtils.isExistFile(fileRes)) {
                         TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileCmd) + " CMD_INIT", fileRes, false);
                     }
+                    //CHANGE MODE TO PROGRAM IF NOT SET BEFORE
                     if (mem_int_last.mode.orElse(0) == 0) {
                         boolean result = TS_SerialComKinConyKC868_A32_R1_2.mode_setIdx(killTrigger, COMX, modeRequested);
                         d.ce("mode_setIdx", modeRequested, result);
                     }
                     continue;
                 }
+                //IF cmdValues16 IS NOT EMPTY, FETCH FIRST, SET MEM
                 List<Integer> lst = cmdValues16.popFirst(val -> true);
                 d.ce("set_lst", lst);
                 List<Integer> lstIdx = TGS_StreamUtils.toLst(IntStream.range(0, lst.size()).filter(i -> lst.get(i) != 0));
@@ -133,6 +152,8 @@ public class Main {
                 }
             }
         });
+
+        //FILL cmdValues16 with file watcher on MODIFY
         TS_FileWatchUtils.file(Main.killTrigger, fileCmd, () -> {
             d.cr("watcher", "detected");
             TS_ThreadWait.seconds("wait.watch", Main.killTrigger, 1);
