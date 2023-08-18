@@ -69,6 +69,15 @@ public class Main {
             TS_ThreadWait.seconds(null, null, 5);
             System.exit(0);
         }
+        //IF PORT NOT GIVEN, ASK
+        if (s.length == 0) {
+            var portNameIdx = TS_DesktopDialogInputListUtils.show(null, "HOW TO USE (WARNING: PORT-NAME NOT GIVEN)", sb.toString(), 0, portNames).orElse(null);
+            if (portNameIdx == null) {
+                d.cr("main", "Exit by cancel.");
+                System.exit(0);
+            }
+            COMX = portNames.get(portNameIdx);
+        }
         //IF PORT GIVEN ON CLI, CHECK
         if (s.length != 0) {
             COMX = portNames.stream().filter(pn -> Objects.equals(s[0], pn)).findAny().orElse(null);
@@ -78,25 +87,14 @@ public class Main {
                 System.exit(0);
             }
         }
-        //IF PORT NOT GIVEN, ASK
-        if (s.length == 0) {
-            var portNameIdx = TS_DesktopDialogInputListUtils.show(null, COMX, COMX, 0, portNames).orElse(null);
-            if (portNameIdx == null) {
-                d.cr("main", "Exit by cancel.");
-                System.exit(0);
-            }
-            COMX = portNames.get(portNameIdx);
-        }
         //PRINT DECIDED PORT
         System.out.println("Selected Port: [" + COMX + "]");
-
         //SHOW GUI
         TS_DesktopMainUtils.setThemeAndinvokeLaterAndFixTheme(() -> gui = new GUI());
-
         //DO STH I DONT REMEMBER 
         TS_ThreadAsync.now(Main.killTrigger, kt -> {
             while (true) {
-                //IF cmdValues16 IS EMPTY
+                //IF cmdValues16 IS EMPTY, FIND A WAY TO FILL IT UP
                 if (cmdValues16.isEmpty()) {
                     mem_int_last = Mem_Int.of();
                     //IF GUI AVAILABLE UPDATE RENDERED ITEMS
@@ -123,7 +121,9 @@ public class Main {
                     if (!TS_FileUtils.isExistFile(fileCmd)) {
                         StringJoiner sj = new StringJoiner("\n");
                         IntStream.range(0, 16).forEachOrdered(i -> {
-                            sj.add(propsParamPrefix + i + "=" + mem_int_last.lstTI.get(i));
+                            if (mem_int_last.lstTI.size() > i) {//NEEDED
+                                sj.add(propsParamPrefix + i + "=" + mem_int_last.lstTI.get(i));
+                            }
                         });
                         TS_FileTxtUtils.toFile(sj.toString(), fileCmd, false);
                     }
