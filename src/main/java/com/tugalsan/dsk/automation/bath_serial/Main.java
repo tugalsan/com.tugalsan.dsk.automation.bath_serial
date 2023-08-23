@@ -11,6 +11,7 @@ import com.tugalsan.api.file.server.TS_FileWatchUtils;
 import com.tugalsan.api.file.txt.server.TS_FileTxtUtils;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
+import com.tugalsan.api.os.server.TS_OsPlatformUtils;
 import com.tugalsan.api.serialcom.kincony.server.KC868_A32_R1_2.TS_SerialComKinConyKC868_A32_R1_2;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsync;
@@ -18,7 +19,6 @@ import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
 import com.tugalsan.api.thread.server.TS_ThreadWait;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -41,14 +41,42 @@ public class Main {
     public static volatile int modeRequested = 1;
     public static volatile GUI gui;
 
-    final public static Path fileCmd = Paths.get("C:", "com.tugalsan.dsk.automation.bath_serial", "cmd.txt");
-    final public static Path fileRes = Paths.get("C:", "com.tugalsan.dsk.automation.bath_serial", "res.txt");
+    public static Path fileCmd;
+    /*C:\com.tugalsan.dsk.automation.bath_serial\cmd.txt
+    bath_timer_0=0
+    bath_timer_1=0
+    bath_timer_2=1800
+    bath_timer_3=190
+    bath_timer_4=190
+    bath_timer_5=190
+    bath_timer_6=15
+    bath_timer_7=190
+    bath_timer_8=180
+    bath_timer_9=90
+    bath_timer_10=190
+    bath_timer_11=120
+    bath_timer_12=1800
+    bath_timer_13=0
+    bath_timer_14=0
+    bath_timer_15=0
+     */
+    public static Path fileRes;
+    /*C:\com.tugalsan.dsk.automation.bath_serial\res.txt
+    02.05.2023 12:01:04 CMD_DONE
+     */
     final public static String propsParamPrefix = "bath_timer_";
     public static String COMX;
 
     public static TS_ThreadSyncTrigger killTrigger = TS_ThreadSyncTrigger.of();
 
     public static void main(String... s) {
+        //FOLDERS
+        var fileFolderName = "com.tugalsan.dsk.automation.bath_serial";
+        var fileFolder = TS_OsPlatformUtils.isWindows()
+                ? Path.of("C:", fileFolderName)
+                : Path.of("~/" + fileFolderName);
+        fileCmd = fileFolder.resolve("cmd.txt");
+        fileRes = fileFolder.resolve("res.txt");
         //PREPARE INFO
         var sb = new StringBuilder()
                 .append("USAGE: java --enable-preview --add-modules jdk.incubator.concurrent \\")

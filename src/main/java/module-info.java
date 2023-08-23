@@ -2,6 +2,7 @@ module com.tugalsan.dsk.automation.bath_serial {
     requires java.desktop;
     requires AbsoluteLayout.RELEASE180;
     requires com.tugalsan.api.log;
+    requires com.tugalsan.api.os;
     requires com.tugalsan.api.string;
     requires com.tugalsan.api.unsafe;
     requires com.tugalsan.api.thread;
