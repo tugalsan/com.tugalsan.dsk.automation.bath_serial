@@ -1,0 +1,16 @@
+bath_timer_0=0
+bath_timer_1=0
+bath_timer_2=1800
+bath_timer_3=190
+bath_timer_4=190
+bath_timer_5=190
+bath_timer_6=15
+bath_timer_7=190
+bath_timer_8=180
+bath_timer_9=90
+bath_timer_10=190
+bath_timer_11=120
+bath_timer_12=1800
+bath_timer_13=0
+bath_timer_14=0
+bath_timer_15=0

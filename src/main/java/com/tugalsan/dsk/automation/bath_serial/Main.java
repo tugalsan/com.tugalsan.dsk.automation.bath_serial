@@ -12,6 +12,7 @@ import com.tugalsan.api.file.txt.server.TS_FileTxtUtils;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.os.server.TS_OsPlatformUtils;
+import com.tugalsan.api.os.server.TS_OsUserUtils;
 import com.tugalsan.api.serialcom.kincony.server.KC868_A32_R1_2.TS_SerialComKinConyKC868_A32_R1_2;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsync;
@@ -73,8 +74,8 @@ public class Main {
         //FOLDERS
         var fileFolderName = "com.tugalsan.dsk.automation.bath_serial";
         var fileFolder = TS_OsPlatformUtils.isWindows()
-                ? Path.of("C:", fileFolderName)
-                : Path.of("~/" + fileFolderName);
+                ? Path.of("C:").resolve(fileFolderName)
+                : Path.of("/home/ku_yhk/" + fileFolderName);
         fileCmd = fileFolder.resolve("cmd.txt");
         fileRes = fileFolder.resolve("res.txt");
         //PREPARE INFO
