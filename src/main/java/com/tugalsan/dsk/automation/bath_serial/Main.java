@@ -30,7 +30,7 @@ import javax.swing.JLabel;
 
 //WHEN RUNNING IN NETBEANS, ALL DEPENDENCIES SHOULD HAVE TARGET FOLDER!
 //cd C:\me\codes\com.tugalsan\dsk\com.tugalsan.dsk.automation.bath_serial
-//java --enable-preview --add-modules jdk.incubator.concurrent -jar target/com.tugalsan.dsk.automation.bath_serial-jar-with-dependencies.jar COM3
+//java --enable-preview --add-modules jdk.incubator.vector -jar target/com.tugalsan.dsk.automation.bath_serial-jar-with-dependencies.jar COM3
 public class Main {
 
     final private static TS_Log d = TS_Log.of(true, Main.class);
@@ -80,7 +80,7 @@ public class Main {
         fileRes = fileFolder.resolve("res.txt");
         //PREPARE INFO
         var sb = new StringBuilder()
-                .append("USAGE: java --enable-preview --add-modules jdk.incubator.concurrent \\")
+                .append("USAGE: java --enable-preview --add-modules jdk.incubator.vector \\")
                 .append("\n       -jar target/com.tugalsan.dsk.automation.bath_serial-1.0-SNAPSHOT-jar-with-dependencies.jar COMX");
         List<String> portNamesFull = TS_SerialComKinConyKC868_A32_R1_2.listPortNamesFull();
         List<String> portNames = TS_SerialComKinConyKC868_A32_R1_2.listPortNames();
