@@ -15,7 +15,7 @@ public class GUI extends javax.swing.JFrame {
     private List<JButton> lstBtns = TGS_ListUtils.of();
 
     private Optional<List<Integer>> getLblValues() {
-        List<Integer> result = TGS_StreamUtils.toLst(
+        var result = TGS_StreamUtils.toLst(
                 lstValues.stream()
                         .map(lbl -> TGS_CastUtils.toInteger(lbl.getText()))
                         .filter(val -> val != null)
@@ -63,12 +63,12 @@ public class GUI extends javax.swing.JFrame {
     public GUI() {
         setTitle("MESA METAL YÜZEY HAZIRLAMA PROGRAMI");
         initComponents();
-        int offsetX = 6;
-        int offsetY = 120;
-        int widthName = 150;
-        int widthValue = 75;
-        int height = 24;
-        int gap = 2;
+        var offsetX = 6;
+        var offsetY = 120;
+        var widthName = 150;
+        var widthValue = 75;
+        var height = 24;
+        var gap = 2;
         IntStream.range(0, 16).forEachOrdered(i -> {
             lstValues.add(new JLabel());
             lstBtns.add(new JButton(lblNames_KüçükFosfat.get(i) + ":"));
@@ -77,8 +77,8 @@ public class GUI extends javax.swing.JFrame {
         });
         IntStream.range(0, 16).forEachOrdered(i -> {
             lstBtns.get(i).addActionListener(e -> {
-                Integer oldVal = TGS_CastUtils.toInteger(this.lstValues.get(i).getText());
-                Optional<Integer> newVal = TS_DesktopDialogInputNumberUtils.show("Sayı Girin", oldVal);
+                var oldVal = TGS_CastUtils.toInteger(this.lstValues.get(i).getText());
+                var newVal = TS_DesktopDialogInputNumberUtils.show("Sayı Girin", oldVal);
                 if (!newVal.isPresent()) {
                     TS_DesktopDialogInfoUtils.show("HATA", "Bir sayı olmalıydı.");
                     return;
@@ -87,7 +87,7 @@ public class GUI extends javax.swing.JFrame {
                     TS_DesktopDialogInfoUtils.show("HATA", "0 dan büyük olmalıydı.");
                     return;
                 }
-                Optional<List<Integer>> lblValues = getLblValues();
+                var lblValues = getLblValues();
                 if (lblValues.isPresent()) {
                     lblValues.get().set(i, newVal.get());
                     Main.cmdValues16.add(lblValues.get());

@@ -12,7 +12,6 @@ import com.tugalsan.api.file.txt.server.TS_FileTxtUtils;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.os.server.TS_OsPlatformUtils;
-import com.tugalsan.api.os.server.TS_OsUserUtils;
 import com.tugalsan.api.serialcom.kincony.server.KC868_A32_R1_2.TS_SerialComKinConyKC868_A32_R1_2;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.thread.server.async.TS_ThreadAsync;
@@ -22,11 +21,8 @@ import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Properties;
 import java.util.StringJoiner;
 import java.util.stream.IntStream;
-import javax.swing.JLabel;
 
 //WHEN RUNNING IN NETBEANS, ALL DEPENDENCIES SHOULD HAVE TARGET FOLDER!
 //cd C:\me\codes\com.tugalsan\dsk\com.tugalsan.dsk.automation.bath_serial
@@ -65,7 +61,7 @@ public class Main {
     /*C:\com.tugalsan.dsk.automation.bath_serial\res.txt
     02.05.2023 12:01:04 CMD_DONE
      */
-    final public static String propsParamPrefix = "bath_timer_";
+    final public static String PROPS_PARAM_PREFIXS = "bath_timer_";
     public static String COMX;
 
     public static TS_ThreadSyncTrigger killTrigger = TS_ThreadSyncTrigger.of();
@@ -82,8 +78,8 @@ public class Main {
         var sb = new StringBuilder()
                 .append("USAGE: java --enable-preview --add-modules jdk.incubator.vector \\")
                 .append("\n       -jar target/com.tugalsan.dsk.automation.bath_serial-1.0-SNAPSHOT-jar-with-dependencies.jar COMX");
-        List<String> portNamesFull = TS_SerialComKinConyKC868_A32_R1_2.listPortNamesFull();
-        List<String> portNames = TS_SerialComKinConyKC868_A32_R1_2.listPortNames();
+        var portNamesFull = TS_SerialComKinConyKC868_A32_R1_2.listPortNamesFull();
+        var portNames = TS_SerialComKinConyKC868_A32_R1_2.listPortNames();
         if (portNames.isEmpty()) {
             sb.append("\nERROR: NO PORT DETECTED!");
         } else {
@@ -137,8 +133,8 @@ public class Main {
                         );
                         if (mem_int_last.status == Mem_Int.STATUS.OK) {
                             IntStream.range(0, 16).forEachOrdered(i -> {//BUTTON UPDATE
-                                Integer memVal = mem_int_last.mem_int.get().get(32 * 3 + i);
-                                JLabel lstStr = gui.lstValues.get(i);
+                                var memVal = mem_int_last.mem_int.get().get(32 * 3 + i);
+                                var lstStr = gui.lstValues.get(i);
                                 if (Objects.equals(memVal, lstStr)) {
                                     return;
                                 }
@@ -148,10 +144,10 @@ public class Main {
                     }
                     //IF fileCmd NOT EXISTS FILL IT
                     if (!TS_FileUtils.isExistFile(fileCmd)) {
-                        StringJoiner sj = new StringJoiner("\n");
+                        var sj = new StringJoiner("\n");
                         IntStream.range(0, 16).forEachOrdered(i -> {
                             if (mem_int_last.lstTI.size() > i) {//NEEDED
-                                sj.add(propsParamPrefix + i + "=" + mem_int_last.lstTI.get(i));
+                                sj.add(PROPS_PARAM_PREFIXS + i + "=" + mem_int_last.lstTI.get(i));
                             }
                         });
                         TS_FileTxtUtils.toFile(sj.toString(), fileCmd, false);
@@ -162,15 +158,15 @@ public class Main {
                     }
                     //CHANGE MODE TO PROGRAM IF NOT SET BEFORE
                     if (mem_int_last.mode.orElse(0) == 0) {
-                        boolean result = TS_SerialComKinConyKC868_A32_R1_2.mode_setIdx(killTrigger, COMX, modeRequested);
+                        var result = TS_SerialComKinConyKC868_A32_R1_2.mode_setIdx(killTrigger, COMX, modeRequested);
                         d.ce("mode_setIdx", modeRequested, result);
                     }
                     continue;
                 }
                 //IF cmdValues16 IS NOT EMPTY, FETCH FIRST, SET MEM
-                List<Integer> lst = cmdValues16.popFirst(val -> true);
+                var lst = cmdValues16.popFirst(val -> true);
                 d.ce("set_lst", lst);
-                List<Integer> lstIdx = TGS_StreamUtils.toLst(IntStream.range(0, lst.size()).filter(i -> lst.get(i) != 0));
+                var lstIdx = TGS_StreamUtils.toLst(IntStream.range(0, lst.size()).filter(i -> lst.get(i) != 0));
                 d.ce("set_osc", lstIdx);
                 if (TS_SerialComKinConyKC868_A32_R1_2.memInt_setAll(Main.killTrigger, COMX, lst) && TS_SerialComKinConyKC868_A32_R1_2.digitalOut_oscilateAll(Main.killTrigger, COMX, lstIdx)) {
                     gui.taReply.setText("Değişiklik başarılı.");
@@ -186,16 +182,16 @@ public class Main {
         TS_FileWatchUtils.file(Main.killTrigger, fileCmd, () -> {
             d.cr("watcher", "detected");
             TS_ThreadWait.seconds("wait.watch", Main.killTrigger, 1);
-            Optional<Properties> props = TS_FilePropertiesUtils.createPropertyReader(fileCmd);
+            var props = TS_FilePropertiesUtils.createPropertyReader(fileCmd);
             if (!props.isPresent()) {
                 d.cr("watcher", "props.isEmpty()");
                 return;
             }
             List<Integer> bath_timers = TGS_ListUtils.of();
             IntStream.range(0, 16).forEachOrdered(i -> {
-                Integer val = TGS_CastUtils.toInteger(props.get().getProperty(propsParamPrefix + i));
+                var val = TGS_CastUtils.toInteger(props.get().getProperty(PROPS_PARAM_PREFIXS + i));
                 if (val == null) {
-                    d.cr("watcher", "param_null", propsParamPrefix + i);
+                    d.cr("watcher", "param_null", PROPS_PARAM_PREFIXS + i);
                     return;
                 }
                 bath_timers.add(val);
