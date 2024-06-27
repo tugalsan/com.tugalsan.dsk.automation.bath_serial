@@ -8,7 +8,7 @@ module com.tugalsan.dsk.automation.bath_serial {
     requires com.tugalsan.api.thread;
     requires com.tugalsan.api.list;
     requires com.tugalsan.api.stream;
-    requires com.tugalsan.api.callable;
+    requires com.tugalsan.api.function;
     requires com.tugalsan.api.validator;
     requires com.tugalsan.api.desktop;
     requires com.tugalsan.api.coronator;
