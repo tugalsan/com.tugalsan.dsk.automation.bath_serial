@@ -33,7 +33,7 @@ public class Main {
 
     public static volatile Mem_Int mem_int_last;
 
-    final public static TS_ThreadSyncLst<List<Integer>> cmdValues16 = TS_ThreadSyncLst.of();
+    final public static TS_ThreadSyncLst<List<Integer>> cmdValues16 = TS_ThreadSyncLst.ofSlowRead();
     public static volatile int mode = 0;
     public static volatile int modeRequested = 1;
     public static volatile GUI gui;
