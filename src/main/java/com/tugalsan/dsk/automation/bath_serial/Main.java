@@ -164,7 +164,7 @@ public class Main {
                     continue;
                 }
                 //IF cmdValues16 IS NOT EMPTY, FETCH FIRST, SET MEM
-                var lst = cmdValues16.popFirst(val -> true);
+                var lst = cmdValues16.removeAndPopFirst(val -> true);
                 d.ce("set_lst", lst);
                 var lstIdx = TGS_StreamUtils.toLst(IntStream.range(0, lst.size()).filter(i -> lst.get(i) != 0));
                 d.ce("set_osc", lstIdx);
