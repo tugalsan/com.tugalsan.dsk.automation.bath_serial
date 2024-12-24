@@ -1,7 +1,6 @@
 package com.tugalsan.dsk.automation.bath_serial;
 
 import com.tugalsan.api.cast.client.TGS_CastUtils;
-import com.tugalsan.api.coronator.client.TGS_Coronator;
 import com.tugalsan.api.desktop.server.TS_DesktopDialogInfoUtils;
 import com.tugalsan.api.desktop.server.TS_DesktopDialogInputListUtils;
 import com.tugalsan.api.desktop.server.TS_DesktopMainUtils;
@@ -9,6 +8,7 @@ import com.tugalsan.api.file.properties.server.TS_FilePropertiesUtils;
 import com.tugalsan.api.file.server.TS_FileUtils;
 import com.tugalsan.api.file.server.TS_FileWatchUtils;
 import com.tugalsan.api.file.txt.server.TS_FileTxtUtils;
+import com.tugalsan.api.function.client.TGS_FuncEffectivelyFinal;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.os.server.TS_OsPlatformUtils;
@@ -125,15 +125,15 @@ public class Main {
                     //IF GUI AVAILABLE UPDATE RENDERED ITEMS
                     if (gui != null) {
                         gui.taReply.setText(mem_int_last.toString());
-                        gui.taReply.append("\nmode:" + TGS_Coronator.ofStr()
+                        gui.taReply.append("\nmode:" + TGS_FuncEffectivelyFinal.ofStr()
                                 .anoint(val -> "Okunuyor")
-                                .anointIf(val -> mem_int_last.mode.isPresent() && mem_int_last.mode.get() == 0, val -> "DÜĞME TEST")
-                                .anointIf(val -> mem_int_last.mode.isPresent() && mem_int_last.mode.get() == 1, val -> "YH PROGRAMI")
+                                .anointIf(val -> mem_int_last.mode.isPresent() && mem_int_last.mode.value() == 0, val -> "DÜĞME TEST")
+                                .anointIf(val -> mem_int_last.mode.isPresent() && mem_int_last.mode.value() == 1, val -> "YH PROGRAMI")
                                 .coronate()
                         );
                         if (mem_int_last.status == Mem_Int.STATUS.OK) {
                             IntStream.range(0, 16).forEachOrdered(i -> {//BUTTON UPDATE
-                                var memVal = mem_int_last.mem_int.get().get(32 * 3 + i);
+                                var memVal = mem_int_last.mem_int.value().get(32 * 3 + i);
                                 var lstStr = gui.lstValues.get(i);
                                 if (Objects.equals(memVal, lstStr)) {
                                     return;
@@ -157,7 +157,7 @@ public class Main {
                         TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileCmd) + " CMD_INIT", fileRes, false);
                     }
                     //CHANGE MODE TO PROGRAM IF NOT SET BEFORE
-                    if (mem_int_last.mode.orElse(0) == 0) {
+                    if (mem_int_last.mode.orElse(e -> 0) == 0) {
                         var result = TS_SerialComKinConyKC868_A32_R1_2.mode_setIdx(killTrigger, COMX, modeRequested);
                         d.ce("mode_setIdx", modeRequested, result);
                     }
@@ -168,7 +168,7 @@ public class Main {
                 d.ce("set_lst", lst);
                 var lstIdx = TGS_StreamUtils.toLst(IntStream.range(0, lst.size()).filter(i -> lst.get(i) != 0));
                 d.ce("set_osc", lstIdx);
-                if (TS_SerialComKinConyKC868_A32_R1_2.memInt_setAll(Main.killTrigger, COMX, lst) && TS_SerialComKinConyKC868_A32_R1_2.digitalOut_oscilateAll(Main.killTrigger, COMX, lstIdx)) {
+                if (TS_SerialComKinConyKC868_A32_R1_2.memInt_setAll(Main.killTrigger, COMX, lst).isVoid() && TS_SerialComKinConyKC868_A32_R1_2.digitalOut_oscilateAll(Main.killTrigger, COMX, lstIdx).isVoid()) {
                     gui.taReply.setText("Değişiklik başarılı.");
                     TS_FileTxtUtils.toFile(TS_FileUtils.getTimeLastModified(fileRes) + " CMD_DONE", fileRes, false);
                 } else {
@@ -189,7 +189,7 @@ public class Main {
             }
             List<Integer> bath_timers = TGS_ListUtils.of();
             IntStream.range(0, 16).forEachOrdered(i -> {
-                var val = TGS_CastUtils.toInteger(props.get().getProperty(PROPS_PARAM_PREFIXS + i));
+                var val = TGS_CastUtils.toInteger(props.value().getProperty(PROPS_PARAM_PREFIXS + i));
                 if (val == null) {
                     d.cr("watcher", "param_null", PROPS_PARAM_PREFIXS + i);
                     return;
@@ -203,6 +203,6 @@ public class Main {
             }
             cmdValues16.add(bath_timers);
             d.cr("watcher", "cmd_added", bath_timers);
-        }, TS_FileWatchUtils.Triggers.MODIFY);
+        }, 60, TS_FileWatchUtils.Triggers.MODIFY);
     }
 }

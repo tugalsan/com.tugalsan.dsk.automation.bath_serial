@@ -3,6 +3,7 @@ package com.tugalsan.dsk.automation.bath_serial;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.serialcom.kincony.server.KC868_A32_R1_2.TS_SerialComKinConyKC868_A32_R1_2;
 import com.tugalsan.api.time.client.TGS_Time;
+import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,21 +15,21 @@ public class Mem_Int {
         OK, ERROR_SIZE, ERROR_EMPTY
     }
 
-    private Mem_Int(Optional<List<Integer>> mem_int, Optional<Integer> mode) {
+    private Mem_Int(TGS_UnionExcuse<List<Integer>> mem_int, TGS_UnionExcuse<Integer> mode) {
         this.mem_int = mem_int;
         this.mode = mode;
         if (!mem_int.isPresent()) {
             status = STATUS.ERROR_EMPTY;
             return;
         }
-        if (mem_int.get().size() != 32 * 3 + 16) {
+        if (mem_int.value().size() != 32 * 3 + 16) {
             status = STATUS.ERROR_EMPTY;
             return;
         }
-        IntStream.range(32 * 0, 32 * 1).forEachOrdered(i -> lstDI.add(mem_int.get().get(i).equals(1)));
-        IntStream.range(32 * 1, 32 * 2).forEachOrdered(i -> lstDO.add(mem_int.get().get(i).equals(1)));
-        IntStream.range(32 * 2, 32 * 3).forEachOrdered(i -> lstOS.add(mem_int.get().get(i).equals(1)));
-        IntStream.range(32 * 3, 32 * 3 + 16).forEachOrdered(i -> lstTI.add(mem_int.get().get(i)));
+        IntStream.range(32 * 0, 32 * 1).forEachOrdered(i -> lstDI.add(mem_int.value().get(i).equals(1)));
+        IntStream.range(32 * 1, 32 * 2).forEachOrdered(i -> lstDO.add(mem_int.value().get(i).equals(1)));
+        IntStream.range(32 * 2, 32 * 3).forEachOrdered(i -> lstOS.add(mem_int.value().get(i).equals(1)));
+        IntStream.range(32 * 3, 32 * 3 + 16).forEachOrdered(i -> lstTI.add(mem_int.value().get(i)));
 
         status = STATUS.OK;
     }
@@ -46,7 +47,7 @@ public class Mem_Int {
                         .append(" ERROR_EMPTY");
             case ERROR_SIZE -> sb
                         .append(time.toString_timeOnly())
-                        .append(" ERROR_SIZE [").append(mem_int.get().size()).append("] -> ")
+                        .append(" ERROR_SIZE [").append(mem_int.value().size()).append("] -> ")
                         .append(mem_int);
             case OK -> sb
                         .append(time.toString_timeOnly())
@@ -76,8 +77,8 @@ public class Mem_Int {
         var mode = TS_SerialComKinConyKC868_A32_R1_2.mode_getIdx(Main.killTrigger, Main.COMX);
         return new Mem_Int(mem_int, mode);
     }
-    public Optional<List<Integer>> mem_int;
-    public Optional<Integer> mode;
+    public TGS_UnionExcuse<List<Integer>> mem_int;
+    public TGS_UnionExcuse<Integer> mode;
     public STATUS status;
     public List<Boolean> lstDI = TGS_ListUtils.of();
     public List<Boolean> lstDO = TGS_ListUtils.of();

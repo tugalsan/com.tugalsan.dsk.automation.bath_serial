@@ -83,13 +83,13 @@ public class GUI extends javax.swing.JFrame {
                     TS_DesktopDialogInfoUtils.show("HATA", "Bir sayı olmalıydı.");
                     return;
                 }
-                if (newVal.get() < 0) {
+                if (newVal.value()< 0) {
                     TS_DesktopDialogInfoUtils.show("HATA", "0 dan büyük olmalıydı.");
                     return;
                 }
                 var lblValues = getLblValues();
                 if (lblValues.isPresent()) {
-                    lblValues.get().set(i, newVal.get());
+                    lblValues.get().set(i, newVal.value());
                     Main.cmdValues16.add(lblValues.get());
                 }
             });
