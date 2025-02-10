@@ -8,15 +8,15 @@ import com.tugalsan.api.file.properties.server.TS_FilePropertiesUtils;
 import com.tugalsan.api.file.server.TS_FileUtils;
 import com.tugalsan.api.file.server.TS_FileWatchUtils;
 import com.tugalsan.api.file.txt.server.TS_FileTxtUtils;
-import com.tugalsan.api.function.client.TGS_FuncEffectivelyFinal;
+import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCEEffectivelyFinal;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.os.server.TS_OsPlatformUtils;
 import com.tugalsan.api.serialcom.kincony.server.KC868_A32_R1_2.TS_SerialComKinConyKC868_A32_R1_2;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
-import com.tugalsan.api.thread.server.async.TS_ThreadAsync;
+import com.tugalsan.api.thread.server.async.run.TS_ThreadAsyncRun;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncLst;
-import com.tugalsan.api.thread.server.TS_ThreadWait;
+import com.tugalsan.api.thread.server.sync.TS_ThreadSyncWait;
 import com.tugalsan.api.thread.server.sync.TS_ThreadSyncTrigger;
 import java.nio.file.Path;
 import java.util.List;
@@ -91,7 +91,7 @@ public class Main {
         //EXIT IF PORT LIST EMPTY
         if (portNames.isEmpty()) {
             TS_DesktopDialogInfoUtils.show("HOW TO USE (WARNING: CLI PORT-NAME NOT PRESENTED)", sb.toString());
-            TS_ThreadWait.seconds(null, null, 5);
+            TS_ThreadSyncWait.seconds(null, null, 5);
             System.exit(0);
         }
         //IF PORT NOT GIVEN, ASK
@@ -108,7 +108,7 @@ public class Main {
             COMX = portNames.stream().filter(pn -> Objects.equals(s[0], pn)).findAny().orElse(null);
             if (COMX == null) {
                 TS_DesktopDialogInfoUtils.show("HOW TO USE (WARNING: CLI PORT-NAME WRONG)", sb.toString());
-                TS_ThreadWait.seconds(null, null, 5);
+                TS_ThreadSyncWait.seconds(null, null, 5);
                 System.exit(0);
             }
         }
@@ -117,7 +117,7 @@ public class Main {
         //SHOW GUI
         TS_DesktopMainUtils.setThemeAndinvokeLaterAndFixTheme(() -> gui = new GUI());
         //DO STH I DONT REMEMBER 
-        TS_ThreadAsync.now(Main.killTrigger, kt -> {
+        TS_ThreadAsyncRun.now(Main.killTrigger, kt -> {
             while (true) {
                 //IF cmdValues16 IS EMPTY, FIND A WAY TO FILL IT UP
                 if (cmdValues16.isEmpty()) {
@@ -125,7 +125,7 @@ public class Main {
                     //IF GUI AVAILABLE UPDATE RENDERED ITEMS
                     if (gui != null) {
                         gui.taReply.setText(mem_int_last.toString());
-                        gui.taReply.append("\nmode:" + TGS_FuncEffectivelyFinal.ofStr()
+                        gui.taReply.append("\nmode:" + TGS_FuncMTUCEEffectivelyFinal.ofStr()
                                 .anoint(val -> "Okunuyor")
                                 .anointIf(val -> mem_int_last.mode.isPresent() && mem_int_last.mode.value() == 0, val -> "DÜĞME TEST")
                                 .anointIf(val -> mem_int_last.mode.isPresent() && mem_int_last.mode.value() == 1, val -> "YH PROGRAMI")
@@ -181,7 +181,7 @@ public class Main {
         //FILL cmdValues16 with file watcher on MODIFY
         TS_FileWatchUtils.file(Main.killTrigger, fileCmd, () -> {
             d.cr("watcher", "detected");
-            TS_ThreadWait.seconds("wait.watch", Main.killTrigger, 1);
+            TS_ThreadSyncWait.seconds("wait.watch", Main.killTrigger, 1);
             var props = TS_FilePropertiesUtils.createPropertyReader(fileCmd);
             if (!props.isPresent()) {
                 d.cr("watcher", "props.isEmpty()");
