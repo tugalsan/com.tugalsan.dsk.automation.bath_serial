@@ -17,7 +17,7 @@ public class GUI extends javax.swing.JFrame {
     private Optional<List<Integer>> getLblValues() {
         var result = TGS_StreamUtils.toLst(
                 lstValues.stream()
-                        .map(lbl -> TGS_CastUtils.toInteger(lbl.getText()))
+                        .map(lbl -> TGS_CastUtils.toInteger(lbl.getText()).orElse(null))
                         .filter(val -> val != null)
         );
         return result.size() == 16 ? Optional.of(result) : Optional.empty();
@@ -77,13 +77,13 @@ public class GUI extends javax.swing.JFrame {
         });
         IntStream.range(0, 16).forEachOrdered(i -> {
             lstBtns.get(i).addActionListener(e -> {
-                var oldVal = TGS_CastUtils.toInteger(this.lstValues.get(i).getText());
+                var oldVal = TGS_CastUtils.toInteger(this.lstValues.get(i).getText()).orElse(null);
                 var newVal = TS_DesktopDialogInputNumberUtils.show("Sayı Girin", oldVal);
                 if (!newVal.isPresent()) {
                     TS_DesktopDialogInfoUtils.show("HATA", "Bir sayı olmalıydı.");
                     return;
                 }
-                if (newVal.value()< 0) {
+                if (newVal.value() < 0) {
                     TS_DesktopDialogInfoUtils.show("HATA", "0 dan büyük olmalıydı.");
                     return;
                 }

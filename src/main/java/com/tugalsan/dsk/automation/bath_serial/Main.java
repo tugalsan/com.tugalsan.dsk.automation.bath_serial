@@ -189,7 +189,7 @@ public class Main {
             }
             List<Integer> bath_timers = TGS_ListUtils.of();
             IntStream.range(0, 16).forEachOrdered(i -> {
-                var val = TGS_CastUtils.toInteger(props.value().getProperty(PROPS_PARAM_PREFIXS + i));
+                var val = TGS_CastUtils.toInteger(props.value().getProperty(PROPS_PARAM_PREFIXS + i)).orElse(null);
                 if (val == null) {
                     d.cr("watcher", "param_null", PROPS_PARAM_PREFIXS + i);
                     return;
