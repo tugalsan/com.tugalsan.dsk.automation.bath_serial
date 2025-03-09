@@ -117,7 +117,7 @@ public class Main {
         //SHOW GUI
         TS_DesktopMainUtils.setThemeAndinvokeLaterAndFixTheme(() -> gui = new GUI());
         //DO STH I DONT REMEMBER 
-        TS_ThreadAsyncRun.now(Main.killTrigger, kt -> {
+        TS_ThreadAsyncRun.now(Main.killTrigger.newChild(d.className), kt -> {
             while (true) {
                 //IF cmdValues16 IS EMPTY, FIND A WAY TO FILL IT UP
                 if (cmdValues16.isEmpty()) {
