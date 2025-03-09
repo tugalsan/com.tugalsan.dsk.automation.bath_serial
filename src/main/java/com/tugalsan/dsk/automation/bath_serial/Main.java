@@ -64,7 +64,7 @@ public class Main {
     final public static String PROPS_PARAM_PREFIXS = "bath_timer_";
     public static String COMX;
 
-    public static TS_ThreadSyncTrigger killTrigger = TS_ThreadSyncTrigger.of();
+    public static TS_ThreadSyncTrigger killTrigger = TS_ThreadSyncTrigger.of("main");
 
     public static void main(String... s) {
         //FOLDERS
