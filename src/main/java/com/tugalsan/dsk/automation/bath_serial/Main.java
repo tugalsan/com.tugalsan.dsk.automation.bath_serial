@@ -8,7 +8,7 @@ import com.tugalsan.api.file.properties.server.TS_FilePropertiesUtils;
 import com.tugalsan.api.file.server.TS_FileUtils;
 import com.tugalsan.api.file.server.TS_FileWatchUtils;
 import com.tugalsan.api.file.txt.server.TS_FileTxtUtils;
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCEEffectivelyFinal;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTUEffectivelyFinal;
 import com.tugalsan.api.list.client.TGS_ListUtils;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.os.server.TS_OsPlatformUtils;
@@ -125,7 +125,7 @@ public class Main {
                     //IF GUI AVAILABLE UPDATE RENDERED ITEMS
                     if (gui != null) {
                         gui.taReply.setText(mem_int_last.toString());
-                        gui.taReply.append("\nmode:" + TGS_FuncMTUCEEffectivelyFinal.ofStr()
+                        gui.taReply.append("\nmode:" + TGS_FuncMTUEffectivelyFinal.ofStr()
                                 .anoint(val -> "Okunuyor")
                                 .anointIf(val -> mem_int_last.mode.isPresent() && mem_int_last.mode.value() == 0, val -> "DÜĞME TEST")
                                 .anointIf(val -> mem_int_last.mode.isPresent() && mem_int_last.mode.value() == 1, val -> "YH PROGRAMI")
